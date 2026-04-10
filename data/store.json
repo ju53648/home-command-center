@@ -1,0 +1,19 @@
+{
+  "settings": {
+    "name": "My Home",
+    "updatedAt": ""
+  },
+  "mqtt": {
+    "enabled": false,
+    "brokerUrl": "",
+    "username": "",
+    "password": "",
+    "baseTopic": "home/command-center",
+    "qos": 0,
+    "retain": false
+  },
+  "users": [],
+  "devices": [],
+  "scenes": [],
+  "activity": []
+}

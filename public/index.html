@@ -1,0 +1,978 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Command Center</title>
+  <style>
+:root {
+  --bg: #f2f4ef;
+  --ink: #1f2a1f;
+  --muted: #526351;
+  --line: #cdd7cb;
+  --accent: #2d8f6f;
+  --accent-ink: #ecfff8;
+  --danger: #9a2f2f;
+  --card: #ffffffd9;
+  --shadow: 0 16px 40px rgba(26, 49, 33, 0.14);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+  background:
+    radial-gradient(circle at 18% 12%, #b5dfcb66, transparent 30%),
+    radial-gradient(circle at 84% 8%, #d8c99652, transparent 34%),
+    linear-gradient(145deg, #eef3ed, #f6f4ef);
+  padding: 18px;
+}
+
+.bg-orb {
+  position: fixed;
+  border-radius: 999px;
+  filter: blur(40px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.bg-a {
+  width: 240px;
+  height: 240px;
+  background: #8bd1b2;
+  left: -60px;
+  top: -80px;
+}
+
+.bg-b {
+  width: 260px;
+  height: 260px;
+  background: #dfcc8d;
+  right: -70px;
+  top: -90px;
+}
+
+.topbar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+h1 {
+  margin: 6px 0 10px;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+}
+
+.sub {
+  margin: 0;
+  color: var(--muted);
+  max-width: 720px;
+}
+
+.layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.panel {
+  grid-column: span 12;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  backdrop-filter: blur(8px);
+}
+
+.auth-panel {
+  margin-bottom: 14px;
+}
+
+.auth-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+}
+
+.panel-log {
+  grid-column: span 12;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+h2, h3 {
+  margin: 0;
+}
+
+.pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.pill-role {
+  border-color: #2d8f6f66;
+  background: #eefaf4;
+  color: #245d49;
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.checkbox-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  min-height: 40px;
+}
+
+input, textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 11px;
+  font: inherit;
+  color: var(--ink);
+  background: #ffffff;
+}
+
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 11px;
+  font: inherit;
+  color: var(--ink);
+  background: #ffffff;
+}
+
+.btn {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f7faf6;
+  color: var(--ink);
+  padding: 9px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn:hover { filter: brightness(0.98); }
+
+.btn-accent {
+  border-color: #2d8f6f66;
+  background: linear-gradient(120deg, #2d8f6f, #3aa785);
+  color: var(--accent-ink);
+}
+
+.btn-danger {
+  border-color: #9a2f2f44;
+  background: #fef4f4;
+  color: var(--danger);
+}
+
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-list {
+  display: grid;
+  gap: 8px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffffdc;
+  padding: 10px;
+}
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+
+.meta {
+  margin: 7px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.meta.warn {
+  color: #955a00;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.inline {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.log-list {
+  display: grid;
+  gap: 7px;
+  max-height: 330px;
+  overflow: auto;
+}
+
+.log-item {
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  background: #fcfffc;
+}
+
+.toast {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+@media (min-width: 980px) {
+  .panel:nth-child(1), .panel:nth-child(2) { grid-column: span 6; }
+  .panel-log { grid-column: span 12; }
+}
+
+.quick-add-grid {
+  background: #f0fff8;
+  border: 1px dashed #2d8f6f88;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 4px;
+}
+
+.quick-add-grid input { background: #fff; }
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 12px 0 8px;
+}
+
+.section-label {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+  </style>
+</head>
+<body>
+  <div class="bg-orb bg-a"></div>
+  <div class="bg-orb bg-b"></div>
+
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Smart Home Hub</p>
+      <h1>Home Command Center</h1>
+      <p class="sub">Ein Ort fuer Licht, Steckdosen, Gates, Medien und Programme auf deinen Geraeten.</p>
+    </div>
+    <div class="quick-actions">
+      <span id="role-pill" class="pill pill-role">nicht eingeloggt</span>
+      <button id="logout" class="btn" hidden>Logout</button>
+      <button id="reload" class="btn">Neu laden</button>
+      <button id="create-demo" class="btn btn-accent">Demo anlegen</button>
+    </div>
+  </header>
+
+  <section id="auth-panel" class="panel auth-panel">
+    <div class="panel-head">
+      <h2>Login</h2>
+      <span class="pill">Rollen: admin / member / viewer</span>
+    </div>
+    <form id="login-form" class="form-grid auth-grid">
+      <input name="username" placeholder="Username" autocomplete="username" required>
+      <input name="password" type="password" placeholder="Passwort" autocomplete="current-password" required>
+      <button class="btn btn-accent" type="submit">Einloggen</button>
+    </form>
+    <p class="meta">Beim ersten Start: admin / admin123 (direkt danach Passwort aendern).</p>
+  </section>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Geraete</h2>
+        <span class="pill" id="device-count">0</span>
+      </div>
+
+      <p class="section-label">Schnell-Hinzuf&uuml;gen (Windows-Agent)</p>
+      <form id="quick-add-form" class="form-grid quick-add-grid">
+        <input name="ip" placeholder="IP-Adresse (z. B. 192.168.178.50)" required>
+        <div class="inline">
+          <input name="port" type="number" min="1" max="65535" value="5000" placeholder="Port" style="max-width:110px">
+          <input name="token" placeholder="Token (optional)" style="flex:1">
+        </div>
+        <div class="inline">
+          <input name="name" placeholder="Name (optional)" style="flex:1">
+          <input name="room" placeholder="Raum (optional)" style="flex:1">
+        </div>
+        <button class="btn btn-accent" type="submit">Ger&auml;t hinzuf&uuml;gen</button>
+      </form>
+      <p class="meta">Verbindet sich mit dem Windows-Agenten auf Port 5000 und legt Standardaktionen an. Gerät wird auch bei offline erstellt.</p>
+
+      <hr class="divider">
+      <p class="section-label">Manuell konfigurieren</p>
+      <form id="device-form" class="form-grid">
+        <input name="name" placeholder="Name (z. B. Wohnzimmer-PC)" required>
+        <input name="room" placeholder="Raum (z. B. Wohnzimmer)" required>
+        <input name="type" placeholder="Typ (pc/light/speaker/custom)" required>
+        <input name="baseUrl" placeholder="Base URL (z. B. http://192.168.178.50:5000)" required>
+        <input name="token" placeholder="Token (optional)">
+        <textarea name="actionsJson" rows="6" placeholder='Actions als JSON, z. B. [{"name":"Licht an","method":"POST","path":"/light/on","body":"{}"}]'></textarea>
+        <button class="btn btn-accent" type="submit">Geraet speichern</button>
+      </form>
+
+      <div id="devices" class="card-list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>MQTT</h2>
+        <span id="mqtt-status-pill" class="pill">unknown</span>
+      </div>
+
+      <form id="mqtt-form" class="form-grid">
+        <label class="checkbox-line"><input name="enabled" type="checkbox"> MQTT aktiv</label>
+        <input name="brokerUrl" placeholder="Broker URL (z. B. mqtt://192.168.178.20:1883)">
+        <input name="username" placeholder="MQTT Username (optional)">
+        <input name="password" type="password" placeholder="MQTT Passwort (optional)">
+        <input name="baseTopic" placeholder="Base Topic (z. B. home/command-center)">
+        <div class="inline">
+          <select name="qos">
+            <option value="0">QoS 0</option>
+            <option value="1">QoS 1</option>
+            <option value="2">QoS 2</option>
+          </select>
+          <label class="checkbox-line"><input name="retain" type="checkbox"> retain</label>
+        </div>
+        <button class="btn" type="submit">MQTT speichern</button>
+      </form>
+
+      <form id="mqtt-publish-form" class="form-grid">
+        <input name="topic" placeholder="Topic (z. B. home/livingroom/light/set)" required>
+        <textarea name="payload" rows="3" placeholder='Payload (Text oder JSON), z. B. {"state":"ON"}' required></textarea>
+        <button class="btn btn-accent" type="submit">MQTT Publish senden</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Szenen</h2>
+        <span class="pill" id="scene-count">0</span>
+      </div>
+
+      <form id="scene-form" class="form-grid">
+        <input name="name" placeholder="Szenenname (z. B. Abendmodus)" required>
+        <textarea name="stepsJson" rows="5" placeholder='Steps als JSON, z. B. [{"deviceId":"...","actionId":"..."}]' required></textarea>
+        <button class="btn" type="submit">Szene speichern</button>
+      </form>
+
+      <div id="scenes" class="card-list"></div>
+    </section>
+
+    <section id="users-panel" class="panel" hidden>
+      <div class="panel-head">
+        <h2>Benutzerverwaltung</h2>
+        <span class="pill" id="user-count">0</span>
+      </div>
+
+      <form id="user-form" class="form-grid">
+        <input name="username" placeholder="Username" required>
+        <input name="displayName" placeholder="Anzeigename" required>
+        <select name="role">
+          <option value="viewer">viewer</option>
+          <option value="member">member</option>
+          <option value="admin">admin</option>
+        </select>
+        <input name="password" type="password" placeholder="Startpasswort (mind. 6)" required>
+        <button class="btn" type="submit">User erstellen</button>
+      </form>
+
+      <div id="users" class="card-list"></div>
+    </section>
+
+    <section class="panel panel-log">
+      <div class="panel-head">
+        <h2>Aktivitaet</h2>
+      </div>
+      <div id="activity" class="log-list"></div>
+    </section>
+  </main>
+
+  <template id="device-template">
+    <article class="card">
+      <div class="card-head">
+        <h3></h3>
+        <button class="btn btn-danger" data-device-delete>Entfernen</button>
+      </div>
+      <p class="meta"></p>
+      <div class="actions" data-device-actions></div>
+    </article>
+  </template>
+
+  <template id="scene-template">
+    <article class="card">
+      <div class="card-head">
+        <h3></h3>
+        <div class="inline">
+          <button class="btn btn-accent" data-scene-run>Ausfuehren</button>
+          <button class="btn btn-danger" data-scene-delete>Entfernen</button>
+        </div>
+      </div>
+      <p class="meta"></p>
+    </article>
+  </template>
+
+  <template id="user-template">
+    <article class="card">
+      <div class="card-head">
+        <h3></h3>
+        <span class="pill" data-user-role></span>
+      </div>
+      <p class="meta"></p>
+      <form class="inline" data-password-form>
+        <input name="password" type="password" placeholder="Neues Passwort">
+        <button class="btn" type="submit">Passwort setzen</button>
+      </form>
+    </article>
+  </template>
+
+  <script>
+const el = {
+  authPanel: document.getElementById("auth-panel"),
+  loginForm: document.getElementById("login-form"),
+  logout: document.getElementById("logout"),
+  rolePill: document.getElementById("role-pill"),
+  devices: document.getElementById("devices"),
+  scenes: document.getElementById("scenes"),
+  users: document.getElementById("users"),
+  activity: document.getElementById("activity"),
+  deviceForm: document.getElementById("device-form"),
+  sceneForm: document.getElementById("scene-form"),
+  userForm: document.getElementById("user-form"),
+  mqttForm: document.getElementById("mqtt-form"),
+  mqttPublishForm: document.getElementById("mqtt-publish-form"),
+  mqttStatusPill: document.getElementById("mqtt-status-pill"),
+  usersPanel: document.getElementById("users-panel"),
+  reload: document.getElementById("reload"),
+  createDemo: document.getElementById("create-demo"),
+  deviceCount: document.getElementById("device-count"),
+  sceneCount: document.getElementById("scene-count"),
+  userCount: document.getElementById("user-count"),
+  quickAddForm: document.getElementById("quick-add-form"),
+  deviceTpl: document.getElementById("device-template"),
+  sceneTpl: document.getElementById("scene-template"),
+  userTpl: document.getElementById("user-template"),
+};
+
+let auth = {
+  token: localStorage.getItem("hcc-token") || "",
+  user: null,
+};
+
+let state = {
+  devices: [],
+  scenes: [],
+  users: [],
+  activity: [],
+  mqtt: {},
+};
+
+let mqttStatus = {
+  status: "unknown",
+  error: "",
+  available: false,
+};
+
+function toast(text, ms = 2600) {
+  const node = document.createElement("div");
+  node.className = "toast";
+  node.textContent = text;
+  document.body.appendChild(node);
+  window.setTimeout(() => node.remove(), ms);
+}
+
+function roleOrder(role) {
+  if (role === "admin") return 3;
+  if (role === "member") return 2;
+  return 1;
+}
+
+function hasRole(role) {
+  return roleOrder(auth.user?.role || "viewer") >= roleOrder(role);
+}
+
+async function api(path, method = "GET", body) {
+  const headers = { "Content-Type": "application/json" };
+  if (auth.token) headers.Authorization = "Bearer " + auth.token;
+  const res = await fetch(path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const payload = await res.json().catch(() => ({}));
+  if (res.status === 401) {
+    auth.token = "";
+    auth.user = null;
+    localStorage.removeItem("hcc-token");
+    updateAuthUi();
+    throw new Error(payload.message || "Session abgelaufen");
+  }
+  if (!res.ok && res.status !== 207) throw new Error(payload.message || "API Fehler");
+  return payload;
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "-";
+  return new Intl.DateTimeFormat("de-DE", { dateStyle: "short", timeStyle: "short" }).format(d);
+}
+
+function actionNameById(device, actionId) {
+  const action = (device.actions || []).find((entry) => entry.id === actionId);
+  return action ? action.name : "(unbekannt)";
+}
+
+function setHidden(selector, hidden) {
+  const node = document.querySelector(selector);
+  if (node) node.hidden = hidden;
+}
+
+function updateAuthUi() {
+  const loggedIn = Boolean(auth.user);
+  el.authPanel.hidden = loggedIn;
+  el.logout.hidden = !loggedIn;
+  if (!loggedIn) {
+    el.rolePill.textContent = "nicht eingeloggt";
+    document.body.setAttribute("data-role", "none");
+    return;
+  }
+  el.rolePill.textContent = (auth.user.displayName || auth.user.username) + " (" + auth.user.role + ")";
+  document.body.setAttribute("data-role", auth.user.role);
+  const admin = hasRole("admin");
+  const member = hasRole("member");
+  setHidden("#users-panel", !admin);
+  setHidden("#quick-add-form", !admin);
+  setHidden("#device-form", !admin);
+  setHidden("#scene-form", !admin);
+  setHidden("#mqtt-form", !admin);
+  setHidden("#create-demo", !admin);
+  setHidden("#mqtt-publish-form", !member);
+}
+
+function renderMqttStatus() {
+  const status = mqttStatus.status || "unknown";
+  el.mqttStatusPill.textContent = status;
+  if (mqttStatus.error) {
+    el.mqttStatusPill.title = mqttStatus.error;
+    el.mqttStatusPill.classList.add("meta", "warn");
+  } else {
+    el.mqttStatusPill.title = mqttStatus.available ? "MQTT Modul erkannt" : "MQTT Modul fehlt";
+    el.mqttStatusPill.classList.remove("warn");
+  }
+  const form = el.mqttForm;
+  if (!(form instanceof HTMLFormElement)) return;
+  form.enabled.checked = Boolean(state.mqtt?.enabled);
+  form.brokerUrl.value = state.mqtt?.brokerUrl || "";
+  form.username.value = state.mqtt?.username || "";
+  form.password.value = state.mqtt?.password || "";
+  form.baseTopic.value = state.mqtt?.baseTopic || "home/command-center";
+  form.qos.value = String(state.mqtt?.qos ?? 0);
+  form.retain.checked = Boolean(state.mqtt?.retain);
+}
+
+function renderDevices() {
+  el.deviceCount.textContent = String(state.devices.length);
+  el.devices.innerHTML = "";
+  for (const device of state.devices) {
+    const node = el.deviceTpl.content.cloneNode(true);
+    node.querySelector("h3").textContent = device.name;
+    node.querySelector(".meta").textContent = device.room + " \u00B7 " + device.type + " \u00B7 " + (device.baseUrl || "ohne URL");
+    const delBtn = node.querySelector("[data-device-delete]");
+    delBtn.hidden = !hasRole("admin");
+    delBtn.addEventListener("click", async () => {
+      if (!window.confirm("Geraet " + device.name + " entfernen?")) return;
+      await api("/api/device/" + device.id, "DELETE");
+      await loadData();
+      toast("Geraet entfernt");
+    });
+    const actionsWrap = node.querySelector("[data-device-actions]");
+    if (!(device.actions || []).length) {
+      const muted = document.createElement("span");
+      muted.className = "pill";
+      muted.textContent = "Keine Aktionen";
+      actionsWrap.appendChild(muted);
+    }
+    for (const action of device.actions || []) {
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      const mode = action.mode === "mqtt" ? "MQTT" : action.method;
+      btn.textContent = action.name + " (" + mode + ")";
+      btn.disabled = !hasRole("member");
+      btn.addEventListener("click", async () => {
+        try {
+          const result = await api("/api/device/" + device.id + "/action", "POST", { actionId: action.id });
+          toast(result.ok ? device.name + ": OK" : device.name + ": Fehler", 3200);
+        } catch (error) {
+          toast("Fehler: " + error.message);
+        }
+        await loadData();
+      });
+      actionsWrap.appendChild(btn);
+    }
+    el.devices.appendChild(node);
+  }
+}
+
+function renderScenes() {
+  el.sceneCount.textContent = String(state.scenes.length);
+  el.scenes.innerHTML = "";
+  for (const scene of state.scenes) {
+    const node = el.sceneTpl.content.cloneNode(true);
+    node.querySelector("h3").textContent = scene.name;
+    const detail = (scene.steps || [])
+      .map((step) => {
+        const device = state.devices.find((entry) => entry.id === step.deviceId);
+        if (!device) return "(fehlendes Geraet)";
+        return device.name + " -> " + actionNameById(device, step.actionId);
+      })
+      .join(" | ");
+    node.querySelector(".meta").textContent = detail || "Keine Schritte";
+    const runBtn = node.querySelector("[data-scene-run]");
+    const delBtn = node.querySelector("[data-scene-delete]");
+    runBtn.disabled = !hasRole("member");
+    delBtn.hidden = !hasRole("admin");
+    runBtn.addEventListener("click", async () => {
+      try {
+        const result = await api("/api/scene/" + scene.id + "/run", "POST", {});
+        toast(result.ok ? "Szene " + scene.name + " fertig" : "Szene " + scene.name + " mit Teilfehlern", 3200);
+      } catch (error) {
+        toast("Fehler: " + error.message);
+      }
+      await loadData();
+    });
+    delBtn.addEventListener("click", async () => {
+      await api("/api/scene/" + scene.id, "DELETE");
+      await loadData();
+      toast("Szene entfernt");
+    });
+    el.scenes.appendChild(node);
+  }
+}
+
+function renderUsers() {
+  if (!hasRole("admin")) {
+    el.userCount.textContent = "0";
+    el.users.innerHTML = "";
+    return;
+  }
+  el.userCount.textContent = String(state.users.length);
+  el.users.innerHTML = "";
+  for (const user of state.users) {
+    const node = el.userTpl.content.cloneNode(true);
+    node.querySelector("h3").textContent = user.displayName + " (" + user.username + ")";
+    node.querySelector("[data-user-role]").textContent = user.role;
+    node.querySelector(".meta").textContent = "Erstellt: " + formatDate(user.createdAt);
+    const form = node.querySelector("[data-password-form]");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const password = String(data.get("password") || "");
+      if (password.length < 6) { toast("Passwort zu kurz"); return; }
+      await api("/api/users/" + user.id + "/password", "PUT", { password });
+      form.reset();
+      toast("Passwort gesetzt fuer " + user.username);
+      await loadData();
+    });
+    el.users.appendChild(node);
+  }
+}
+
+function renderActivity() {
+  el.activity.innerHTML = "";
+  for (const item of state.activity || []) {
+    const card = document.createElement("article");
+    card.className = "log-item";
+    card.textContent = formatDate(item.at) + " \u00B7 " + item.type + " \u00B7 " + item.detail;
+    el.activity.appendChild(card);
+  }
+}
+
+function renderAll() {
+  updateAuthUi();
+  if (!auth.user) {
+    el.devices.innerHTML = "";
+    el.scenes.innerHTML = "";
+    el.activity.innerHTML = "";
+    el.users.innerHTML = "";
+    el.deviceCount.textContent = "0";
+    el.sceneCount.textContent = "0";
+    el.userCount.textContent = "0";
+    return;
+  }
+  renderMqttStatus();
+  renderDevices();
+  renderScenes();
+  renderUsers();
+  renderActivity();
+}
+
+async function loadData() {
+  if (!auth.token) { renderAll(); return; }
+  const me = await api("/api/auth/me");
+  auth.user = me.user;
+  state = await api("/api/state");
+  const mqtt = await api("/api/mqtt/status");
+  mqttStatus = { status: mqtt.status, error: mqtt.error, available: mqtt.available };
+  renderAll();
+}
+
+async function login(username, password) {
+  const result = await api("/api/auth/login", "POST", { username, password });
+  auth.token = result.token;
+  auth.user = result.user;
+  localStorage.setItem("hcc-token", auth.token);
+  toast("Willkommen " + (auth.user.displayName || auth.user.username));
+}
+
+async function logout() {
+  try { await api("/api/auth/logout", "POST", {}); } catch {}
+  auth.token = "";
+  auth.user = null;
+  localStorage.removeItem("hcc-token");
+  toast("Logout erfolgreich");
+  renderAll();
+}
+
+function installHandlers() {
+  el.loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(el.loginForm);
+    try {
+      await login(String(data.get("username") || ""), String(data.get("password") || ""));
+      el.loginForm.reset();
+      await loadData();
+    } catch (error) {
+      toast("Login Fehler: " + error.message);
+    }
+  });
+
+  el.logout.addEventListener("click", () => {
+    logout().catch((error) => toast("Logout Fehler: " + error.message));
+  });
+
+  el.reload.addEventListener("click", () => {
+    loadData().catch((error) => toast("Fehler: " + error.message));
+  });
+
+  el.createDemo.addEventListener("click", async () => {
+    if (!hasRole("admin")) { toast("Nur Admin."); return; }
+    const demoDevice = {
+      name: "Wohnzimmer-PC",
+      room: "Wohnzimmer",
+      type: "pc",
+      baseUrl: "http://127.0.0.1:5000",
+      token: "",
+      actions: [
+        { name: "Spotify starten", mode: "http", method: "POST", path: "/program/start", body: '{"name":"Spotify"}', headers: {} },
+        { name: "Monitor aus", mode: "http", method: "POST", path: "/monitor/off", body: "{}", headers: {} },
+        { name: "MQTT Broadcast", mode: "mqtt", topic: "home/livingroom/scene", body: '{"state":"movie"}' }
+      ]
+    };
+    try {
+      await api("/api/device", "POST", demoDevice);
+      await loadData();
+      toast("Demo-Geraet erstellt");
+    } catch (error) {
+      toast("Fehler: " + error.message);
+    }
+  });
+
+  el.deviceForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!hasRole("admin")) { toast("Nur Admin."); return; }
+    const form = new FormData(el.deviceForm);
+    const actionText = String(form.get("actionsJson") || "[]").trim() || "[]";
+    let actions;
+    try {
+      actions = JSON.parse(actionText);
+      if (!Array.isArray(actions)) throw new Error("Actions muessen ein Array sein");
+    } catch (error) {
+      toast("Actions JSON ungueltig: " + error.message);
+      return;
+    }
+    try {
+      await api("/api/device", "POST", {
+        name: form.get("name"),
+        room: form.get("room"),
+        type: form.get("type"),
+        baseUrl: form.get("baseUrl"),
+        token: form.get("token"),
+        actions,
+      });
+      el.deviceForm.reset();
+      await loadData();
+      toast("Geraet gespeichert");
+    } catch (error) {
+      toast("Fehler: " + error.message);
+    }
+  });
+
+  el.sceneForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!hasRole("admin")) { toast("Nur Admin."); return; }
+    const form = new FormData(el.sceneForm);
+    let steps;
+    try {
+      steps = JSON.parse(String(form.get("stepsJson") || "[]"));
+      if (!Array.isArray(steps)) throw new Error("Steps muessen ein Array sein");
+    } catch (error) {
+      toast("Steps JSON ungueltig: " + error.message);
+      return;
+    }
+    try {
+      await api("/api/scene", "POST", { name: form.get("name"), steps });
+      el.sceneForm.reset();
+      await loadData();
+      toast("Szene gespeichert");
+    } catch (error) {
+      toast("Fehler: " + error.message);
+    }
+  });
+
+  el.userForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!hasRole("admin")) { toast("Nur Admin."); return; }
+    const form = new FormData(el.userForm);
+    try {
+      await api("/api/users", "POST", {
+        username: form.get("username"),
+        displayName: form.get("displayName"),
+        role: form.get("role"),
+        password: form.get("password"),
+      });
+      el.userForm.reset();
+      await loadData();
+      toast("User erstellt");
+    } catch (error) {
+      toast("Fehler: " + error.message);
+    }
+  });
+
+  el.mqttForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!hasRole("admin")) { toast("Nur Admin."); return; }
+    const form = new FormData(el.mqttForm);
+    try {
+      await api("/api/mqtt/config", "PUT", {
+        enabled: form.get("enabled") === "on",
+        brokerUrl: form.get("brokerUrl"),
+        username: form.get("username"),
+        password: form.get("password"),
+        baseTopic: form.get("baseTopic"),
+        qos: Number(form.get("qos") || 0),
+        retain: form.get("retain") === "on",
+      });
+      await loadData();
+      toast("MQTT gespeichert");
+    } catch (error) {
+      toast("Fehler: " + error.message);
+    }
+  });
+
+  el.quickAddForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!hasRole("admin")) { toast("Nur Admin."); return; }
+    const form = new FormData(el.quickAddForm);
+    const ip = String(form.get("ip") || "").trim();
+    const port = Number(form.get("port") || 5000);
+    const token = String(form.get("token") || "").trim();
+    const name = String(form.get("name") || "").trim();
+    const room = String(form.get("room") || "").trim();
+    const btn = el.quickAddForm.querySelector("button[type=submit]");
+    btn.disabled = true;
+    btn.textContent = "Verbinde...";
+    try {
+      const result = await api("/api/device/quickadd", "POST", { ip, port, token, name, room });
+      el.quickAddForm.reset();
+      el.quickAddForm.querySelector("[name=port]").value = "5000";
+      await loadData();
+      toast(result.online
+        ? "\u2705 " + result.device.name + " erkannt und hinzugef\u00FCgt"
+        : "\u26A0\uFE0F " + result.device.name + " hinzugef\u00FCgt (Agent nicht erreichbar)", 4000);
+    } catch (error) {
+      toast("Fehler: " + error.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Ger\u00E4t hinzuf\u00FCgen";
+    }
+  });
+
+  el.mqttPublishForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!hasRole("member")) { toast("Mindestens Member Rolle erforderlich."); return; }
+    const form = new FormData(el.mqttPublishForm);
+    try {
+      await api("/api/mqtt/publish", "POST", {
+        topic: form.get("topic"),
+        payload: form.get("payload"),
+      });
+      el.mqttPublishForm.reset();
+      toast("MQTT Publish gesendet");
+      await loadData();
+    } catch (error) {
+      toast("Fehler: " + error.message);
+    }
+  });
+}
+
+installHandlers();
+loadData().catch((error) => toast("Startfehler: " + error.message, 4200));
+  </script>
+</body>
+</html>

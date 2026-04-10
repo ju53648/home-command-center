@@ -1,0 +1,17 @@
+{
+  "name": "home-command-center",
+  "version": "1.0.0",
+  "description": "Local home command center for devices and installed program endpoints",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "mqtt": "^5.10.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

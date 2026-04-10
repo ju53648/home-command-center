@@ -1,0 +1,4 @@
+notepad.exe
+calc.exe
+msedge.exe
+spotify.exe
