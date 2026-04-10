@@ -11,12 +11,16 @@ START_HERE.cmd
 ```
 
 Das Skript:
-- fragt deinen Token ab
+- startet ohne Rueckfrage
 - richtet Autostart ein
 - startet den Agent sofort
 - oeffnet Port 5000 in der Firewall
 
 Danach musst du nichts mehr manuell starten.
+
+Optional:
+- Wenn eine Datei `token.txt` im gleichen Ordner liegt, wird der Inhalt automatisch als Token verwendet.
+- Wenn keine `token.txt` existiert, startet der Agent ohne Token.
 
 Wenn der Agent-Ordner schon lokal auf dem Geraet liegt, reicht wirklich nur:
 

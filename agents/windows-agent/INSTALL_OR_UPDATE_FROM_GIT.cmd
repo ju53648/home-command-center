@@ -1,10 +1,9 @@
 @echo off
 setlocal
 
-rem === Anpassen: deine Repo URL ===
-set "REPO_URL=https://github.com/DEIN_USER/DEIN_REPO.git"
+set "REPO_URL=https://github.com/ju53648/home-command-center.git"
 set "BRANCH=main"
-set "TARGET_DIR=%ProgramData%\HomeCommandCenterAgent"
+set "TARGET_DIR=%LOCALAPPDATA%\HomeCommandCenterAgent"
 
 echo =========================================
 echo HCC Agent - Install oder Update von Git
@@ -15,12 +14,6 @@ where git >nul 2>nul
 if errorlevel 1 (
   echo Git wurde nicht gefunden. Bitte Git installieren:
   echo https://git-scm.com/download/win
-  pause
-  exit /b 1
-)
-
-if "%REPO_URL%"=="https://github.com/DEIN_USER/DEIN_REPO.git" (
-  echo Bitte zuerst oben in dieser Datei REPO_URL anpassen.
   pause
   exit /b 1
 )

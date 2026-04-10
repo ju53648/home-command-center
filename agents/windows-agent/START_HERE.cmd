@@ -6,13 +6,20 @@ set "TASK_NAME=HomeCommandCenterAgent"
 set "PORT=5000"
 set "AGENT_FILE=%~dp0agent.ps1"
 set "ALLOW_FILE=%~dp0allowed-programs.txt"
+set "TOKEN_FILE=%~dp0token.txt"
+set "TOKEN="
 
 echo =========================================
 echo Home Command Center - One Click Setup
 echo =========================================
 echo.
 
-set /p TOKEN=Token eingeben (leer = ohne Token): 
+if exist "%TOKEN_FILE%" (
+  set /p TOKEN=<"%TOKEN_FILE%"
+  echo Token aus token.txt geladen.
+) else (
+  echo Kein token.txt gefunden. Starte ohne Token.
+)
 
 set "AGENT_CMD=powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""%AGENT_FILE%"" -Port %PORT% -Token ""%TOKEN%"" -AllowedProgramsFile ""%ALLOW_FILE%"""
 
