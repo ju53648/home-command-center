@@ -4,17 +4,15 @@ cd /d "%~dp0"
 
 set "REPO_URL=https://github.com/ju53648/home-command-center.git"
 set "BRANCH=main"
-set "DEFAULT_MSG=update"
 
 echo =========================================
-echo Home Command Center - One Click Push
+echo Windows Agent - Schnell Push
 echo =========================================
 echo.
 
 where git >nul 2>nul
 if errorlevel 1 (
   echo Git ist nicht installiert oder nicht im PATH.
-  echo Installiere Git: https://git-scm.com/download/win
   pause
   exit /b 1
 )
@@ -22,7 +20,8 @@ if errorlevel 1 (
 git rev-parse --is-inside-work-tree >nul 2>nul
 if errorlevel 1 (
   echo Dieser Ordner ist noch kein Git-Repository.
-  git init
+  pause
+  exit /b 1
 )
 
 git remote get-url origin >nul 2>nul
@@ -32,21 +31,16 @@ if errorlevel 1 (
   git remote set-url origin "%REPO_URL%"
 )
 
-git add -A
-
-git commit -m "%DEFAULT_MSG%" >nul 2>nul
+git add agents/windows-agent README.md
+git commit -m "update windows agent" >nul 2>nul
 git branch -M "%BRANCH%"
-
-echo.
-echo Pushe nach %REPO_URL% ...
 git push -u origin "%BRANCH%"
 if errorlevel 1 (
-  echo Push fehlgeschlagen.
-  echo Wenn GitHub nach Login fragt, einmal bestaetigen und die Datei erneut starten.
+  echo Push fehlgeschlagen. Falls GitHub Login fragt, bestaetigen und erneut starten.
   pause
   exit /b 1
 )
 
 echo.
-echo Fertig: Code ist auf GitHub.
+echo Fertig.
 pause
